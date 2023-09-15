@@ -18,7 +18,7 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
 
     # Calculate costs with VDB enabled
     storage_cost_vdb_enabled = round((data_volume + ((data_volume / data_models) * code_changes)) * gb_to_tb * storage_cost_per_tb,2)
-    compute_units = round(code_changes + rollbacks,2)
+    compute_units = round(code_changes,2)
     compute_unit_price = round((storage_cost_vdb_disabled * compute_to_storage_ratio) / ((code_changes + rollbacks) * env_count),2)
     compute_cost_vdb_enabled = round(compute_units * compute_unit_price,2)
     total_cost_vdb_enabled = round(storage_cost_vdb_enabled + compute_cost_vdb_enabled,2)
