@@ -136,6 +136,19 @@ def remove_entry(index):
 if st.button("Add New Entry"):
     add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
 
+with st.expander("Storage and Compute cost formulas", expanded=False):
+    st.markdown("""
+    #### VDB Disabled
+    - **Compute cost** = (Code changes + Rollbacks) × No. of Environments
+    - **Storage cost** = Data Volume
+    """)
+
+    st.markdown("""
+    #### VDB Enabled
+    - **Compute cost** = Code changes <span style='color: red;'>~~+ Rollbacks~~ × ~~No. of Environments~~</span>
+    - **Storage cost** = Data Volume + <span style='color: green;'>New materializations as a result of code changes</span>
+    """, unsafe_allow_html=True)
+
 st.markdown('---')
 
 # Scenarios section 
@@ -208,5 +221,11 @@ fig.update_traces(texttemplate='%{y:$}', textposition='inside')
 # Display the bar chart
 st.plotly_chart(fig, use_container_width=True)
 
+st.markdown("""
+### **Conclusions**
+- The **compute cost** decreases significantly 📉, while the **storage cost** increases only marginally 📈.
+- Since compute costs are typically an order of magnitude higher than storage costs, utilizing VDB can significantly reduce the total expenditure by lowering compute costs.
+- The more code changes you make and the more environments you have to promote your changes through, the bigger the cost impact will be when enabling VDB.
+""")
 
 
