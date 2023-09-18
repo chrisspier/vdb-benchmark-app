@@ -76,6 +76,20 @@ image = Image.open('OnDark.png')
 st.image(image)
 st.title("Benchmarking Virtual Data Builds")
 
+with st.expander("What are Virtual Data Builds?", expanded=False):
+    st.markdown("""
+    Virtual Data Build (VDB) allows you to manage code changes and the state of your data warehouse from **a single system driven by git**. 
+    VDB facilitates the creation of virtual data warehouse environments for each Git commit in your codebase **without the need to duplicate data or set up new physical environments**. This is achieved through a smart view pointer swap mechanism at the data warehouse level, optimizing the compute costs.
+    This deep integration between your codebase and your data warehouse state brings several benefits:
+    - **Instant deployment and rollback of your code changes**. Your asset’s view definition can be updated to reference any previous materialization (from any branch). 
+    - **Work on production data in your feature branch** without duplicating data or impacting the production environment/branch with no additional cost.
+    - **Less mental overhead**: VDB converts your code operations into data warehouse assets, saving you the pain of managing environments and promoting code through. 
+    - **Significant savings on warehouse costs, ranging from 40% to 70%** depending on your setup, as we will see in this benchmark.
+    
+    You can find out more about Virtual Data Builds in [this article](https://www.y42.com/blog/virtual-data-builds-one-data-warehouse-environment-for-every-git-commit/)
+    """)
+
+
 # Use columns to create a row of filters at the top
 st.markdown("### Simulation Parameters")
 st.write("Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
@@ -136,6 +150,12 @@ def remove_entry(index):
 if st.button("Add New Entry"):
     add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
 
+st.markdown('---')
+
+# Scenarios section 
+st.markdown("### Scenarios overview")
+st.write("In this section, you can view the table containing details about different configurations. Each entry in the table represents a configuration with details like data model, data volume, code changes frequency, number of environments, and rollbacks. You can add new entries or remove existing ones.")
+
 with st.expander("Storage and Compute cost formulas", expanded=False):
     st.markdown("""
     #### VDB Disabled
@@ -148,12 +168,6 @@ with st.expander("Storage and Compute cost formulas", expanded=False):
     - **Compute cost** = Code changes <span style='color: red;'>~~+ Rollbacks~~ × ~~No. of Environments~~</span>
     - **Storage cost** = Data Volume + <span style='color: green;'>New materializations as a result of code changes</span>
     """, unsafe_allow_html=True)
-
-st.markdown('---')
-
-# Scenarios section 
-st.markdown("### Scenarios overview")
-st.write("In this section, you can view the table containing details about different configurations. Each entry in the table represents a configuration with details like data model, data volume, code changes frequency, number of environments, and rollbacks. You can add new entries or remove existing ones.")
 
 st.dataframe(
     st.session_state['df'],
