@@ -192,6 +192,7 @@ if st.button('Remove Entry'):
         st.write("Removing entry, please wait...")
         remove_entry(remove_option)
         st.write("Entry removed!")
+        st.experimental_rerun()
 
 st.markdown('---')
 
