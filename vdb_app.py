@@ -47,8 +47,8 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
 # Define the default values and presets
 # DEFAULT_VALUES = [200, 100, 40, 2, 1, 7]
 PRESET_VALUES = {
+    "X-Small": [50, 100, 15, 2, 1, 7],
     "Small": [200, 100, 40, 2, 1, 7],
-    "Small 2": [300, 500, 80, 2, 1, 8],
     "Medium": [1000, 10000, 300, 3, 3, 7],
     "Medium 2": [5000, 30000, 400, 4, 3, 8],
     "Large": [3000, 100000, 600, 5, 5, 7],
@@ -120,8 +120,8 @@ with col6:
 # Initialize session state
 if 'df' not in st.session_state:
     # Initialize your DataFrame here with your predefined data
-    small_values = calculate_costs(*PRESET_VALUES["Small"])
-    small_values_2 = calculate_costs(*PRESET_VALUES["Small 2"])
+    small_values = calculate_costs(*PRESET_VALUES["X-Small"])
+    small_values_2 = calculate_costs(*PRESET_VALUES["Small"])
     medium_values = calculate_costs(*PRESET_VALUES["Medium"])
     medium_values_2 = calculate_costs(*PRESET_VALUES["Medium 2"])
     large_values = calculate_costs(*PRESET_VALUES["Large"])
