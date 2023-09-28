@@ -185,17 +185,12 @@ st.write('Tool investment: ', st.session_state['tooling_invest'], st.session_sta
 
 col1, col2, col3 = st.columns(3)
 
-st.markdown("""
-    <style>
-    .big-font {
-        font-size:300px !important;
-    }
-    </style> st.session_state['tooling_invest']
-    """, unsafe_allow_html=True
-)
-
 with col1:
-    st.markdown(st.session_state['tooling_invest'])   
+    st.markdown(f"""
+        <div style='font-size: 36px;'>
+            Tooling investment: {st.session_state['tooling_invest']}$
+        </div>
+    """, unsafe_allow_html=True)
 
 # with col2:
 #     compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
