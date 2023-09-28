@@ -25,6 +25,10 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
     
     # Calculate savings percentage
     saving_percentage = round(((total_cost_vdb_disabled - total_cost_vdb_enabled) / total_cost_vdb_disabled) * 100,2)
+    total_savings = total_cost_vdb_disabled * (saving_percentage / 100)
+
+    #Calculate ROI
+    roi = round(total_savings/tooling_invest)
 
     return {
         'Data Models': data_models,
@@ -40,6 +44,9 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
         'Total': total_cost_vdb_disabled,
         'Total (VDB)': total_cost_vdb_enabled,
         'Savings %': saving_percentage,
+        'Savings $': total_savings,
+        'Tool Investment (per month)': tooling_invest,
+        'ROI': roi,
     }
 
 
@@ -95,7 +102,7 @@ st.markdown("### Simulation Parameters")
 st.write("Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
 
 
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+col1, col2, col3, col4 = st.columns(4)
 
 # Now add your filters inside these columns
 with col1:
@@ -110,12 +117,16 @@ with col3:
 with col4:
     env_count = st.number_input('Environments', value=2, step=1)  # Adjust the value and label accordingly
 
-with col5:
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
     rollbacks = st.number_input('Rollbacks', value=1, step=1)  # Adjust the value and label accordingly
 
-with col6:
+with col2:
     compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
 
+with col3:
+    tooling_invest = st.number_input('Tool Investment (per month)', value = 1000, step=100) # Adjust the value and label accordingly
 
 # Initialize session state
 if 'df' not in st.session_state:
@@ -152,6 +163,19 @@ if st.button("Add New Entry"):
 
 st.markdown('---')
 
+col1, col2, col3 = st.columns(3)
+
+with col1:
+   st.header(tooling_invest)
+
+with col2:
+  st.header(total_savings)
+
+with col3:
+   st.header(roi)
+
+st.markdown('---')
+
 # Scenarios section 
 st.markdown("### Scenarios overview")
 st.write("In this section, you can view the table containing details about different configurations. Each entry in the table represents a configuration with details like data model, data volume, code changes frequency, number of environments, and rollbacks. You can add new entries or remove existing ones.")
@@ -179,6 +203,9 @@ st.dataframe(
         "Total": st.column_config.NumberColumn(format="$%d"),
         "Total (VDB)": st.column_config.NumberColumn(format="$%d"),
         "Savings %": st.column_config.NumberColumn(format="%d%%"),
+        "Savings $": st.column_config.NumberColumn(format="$%d"),
+        "Tool Investment (per month)": st.column_config.NumberColumn(format="$%d"),
+        "ROI": st.column_config.NumberColumn(format="%d%%"),
     },
     hide_index=False,
 )
@@ -242,5 +269,23 @@ st.markdown("""
 - Since compute costs are typically an order of magnitude higher than storage costs, utilizing VDB can significantly reduce the total expenditure by lowering compute costs.
 - The more code changes you make and the more environments you have to promote your changes through, the bigger the cost impact will be when enabling VDB.
 """)
+
+st.markdown("")
+st.markdown("### Got Curious?")
+
+m = st.markdown("""
+<style>
+div.stButton > button:first-child {
+    background-color: #421f8e;
+    color:#ffffff;
+}
+div.stButton > button:hover {
+    background-color: #7d33ff;
+    color:#ffffff;
+    border: #7d33ff;
+    }
+</style>""", unsafe_allow_html=True)
+
+b = st.button("Try Y42 for free and save DWH cost today")
 
 
