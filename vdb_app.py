@@ -97,25 +97,24 @@ st.markdown(hide_default_format, unsafe_allow_html=True)
 # --- SIDEBAR ---
 
 st.sidebar.image("OnDark.png", width=160)
-st.sidebar.title("Benchmarking Virtual Data Builds \n Calculating ROI for Data Teams")
+st.sidebar.title("Calculating the ROI of Virtual Data Builds")
+st.sidebar.subheader("How it works", help='Enter your individual metrics in the sidebar below and press "Add New Entry" to see the ROI estimation on the main page. You can adjust the parameters to define your data model, data volume, code change frequency, number of environments, the number of rollbacks, and the compute-to-storage ratio. The "Tool investment (per month)" is an estimation of what you would pay for a solution that provides you the benefits of Virtual Data Builds. This is needed to calculate the ROI.')
 st.sidebar.write("")
-st.sidebar.write("")
-
 
 # Use columns to create a row of filters at the top
-st.sidebar.markdown(''' :violet[**Simulation Parameters**]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
+#st.sidebar.markdown(''' :violet[**Simulation Parameters**]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
+with st.sidebar: 
+    with st.expander("💻 ENTER YOUR INPUT METRICS", expanded=False):
+        data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
+        data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
+        code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
+        env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
+        rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
+        compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
+        tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
 
-
-data_models = st.sidebar.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
-data_volume = st.sidebar.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
-code_changes = st.sidebar.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
-env_count = st.sidebar.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
-rollbacks = st.sidebar.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
-compute_to_storage_ratio = st.sidebar.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
-tooling_invest = st.sidebar.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
-
-if st.sidebar.button("Add New Entry"):
-    add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
+        if st.button("Add New Entry"):
+            add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
 
 # st.sidebar.selectbox("Select Team Size", ["Small", "Medium", "Large", "Custom"], key='team_size')
 # st.sidebar.markdown("### Input Parameters")
@@ -131,7 +130,10 @@ if st.sidebar.button("Add New Entry"):
 
 image = Image.open('OnDark.png')
 st.image(image, width=160)
+st.title(''' Your ROI from Virtual Data Builds ''')
+st.markdown('---')
 st.markdown("### Introduction: Refresher on Virtual Data Builds")
+st.write('')
 
 # EXPLANATION SECTION - WHAT ARE VIRTUAL DATA BUILDS?
 
@@ -181,10 +183,10 @@ if 'df' not in st.session_state:
 
 st.markdown('---')
 
-st.markdown("### Calculation Result: ROI Summary")
-st.write('Please note that these figures refer to the last entry added. Removing an entry will not impact these figures.')
-
-st.write('Tool investment: ', st.session_state['tooling_invest'], st.session_state['total_savings'], st.session_state['roi'])
+st.markdown("### Calculation result: ROI summary")
+st.write('')
+st.write('Please note that these figures refer to the last entry added. Removing an entry will not impact these figures. The last entry referred to here is in Row', len(st.session_state['df'].index), 'of the table below.')
+st.write('')
 
 col1, col2, col3 = st.columns(3)
 
@@ -196,11 +198,21 @@ with col1:
         </div>
     """, unsafe_allow_html=True)
 
-# with col2:
-#     compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
+with col2:
+    st.markdown(""" VDB-related Savings:""")
+    st.markdown(f"""
+        <div style='font-size: 36px;'>
+            {st.session_state['total_savings']}$
+        </div>
+    """, unsafe_allow_html=True)
 
-# with col3:
-#     tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
+with col3:
+    st.markdown(""" Return on Investment:""")
+    st.markdown(f"""
+        <div style='font-size: 36px;'>
+            {st.session_state['roi']}%
+        </div>
+    """, unsafe_allow_html=True)
 
 
 st.markdown('---')
@@ -305,22 +317,45 @@ st.markdown("""
 st.markdown('---')
 
 st.markdown("")
-st.markdown("### Got Curious?")
+st.markdown("### Got curious about the product or have some questions?")
 
-m = st.markdown("""
-<style>
-div.stButton > button:first-child {
-    background-color: #421f8e;
-    color:#ffffff;
-}
-div.stButton > button:hover {
-    background-color: #7d33ff;
-    color:#ffffff;
-    border: #7d33ff;
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    m = st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #421f8e;
+        color: #ffffff;
     }
-</style>""", unsafe_allow_html=True)
+    div.stButton > button:hover {
+        background-color: #7d33ff;
+        color: #ffffff;
+        border: #7d33ff;
+        }
+    </style>""", unsafe_allow_html=True)
 
-url = 'https://www.y42.com/form/call/form-lp-hs-form-on-homepage-get-free-trial/'
+    url = 'https://www.y42.com/form/call/form-lp-hs-form-on-homepage-get-free-trial/'
 
-if st.button("Try Y42 for free and save DWH cost today"):
-    webbrowser.open_new_tab(url)
+    if st.button("Try Y42 for free"):
+        webbrowser.open_new_tab(url)
+
+with col2:
+    m = st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #421f8e;
+        color: #ffffff;
+    }
+    div.stButton > button:hover {
+        background-color: #7d33ff;
+        color: #ffffff;
+        border: #7d33ff;
+        }
+    </style>""", unsafe_allow_html=True)
+
+    url = 'https://www.y42.com/form/call/intro-call/'
+
+    if st.button("Talk to an expert"):
+        webbrowser.open_new_tab(url)
