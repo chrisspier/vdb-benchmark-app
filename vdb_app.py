@@ -96,7 +96,7 @@ st.markdown(hide_default_format, unsafe_allow_html=True)
 
 # --- SIDEBAR ---
 
-st.sidebar.image("y42_logo_dark.png", width=160)
+st.sidebar.image("OnDark.png", width=160)
 st.sidebar.title("Benchmarking Virtual Data Builds \n Calculating ROI for Data Teams")
 st.sidebar.write("")
 st.sidebar.write("")
@@ -129,7 +129,7 @@ if st.sidebar.button("Add New Entry"):
 
 # --- MAIN PAGE ---
 
-image = Image.open('y42_logo_dark.png')
+image = Image.open('OnDark.png')
 st.image(image, width=160)
 st.markdown("### Introduction: Refresher on Virtual Data Builds")
 

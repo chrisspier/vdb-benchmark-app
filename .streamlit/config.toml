@@ -1,7 +1,8 @@
 [theme] # You have to add this line
 
-primaryColor = '#FF8C02' # Bright Orange
+base = "dark"
+primaryColor = '#7d33ff' # Y42 violet
 
-backgroundColor = '#26282E' # Dark 
-
-secondaryBackgroundColor = '#55B2FF' # Lighter Blue
+# Not changing them for now
+#backgroundColor = '#26282E' # Dark
+#secondaryBackgroundColor = '#5B5E69' # Lighter grey
