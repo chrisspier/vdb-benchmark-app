@@ -5,7 +5,6 @@ from PIL import Image
 import webbrowser
 
 
-
 # Function to calculate costs (same as the one I provided in the previous response)
 def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio, tooling_invest):
     # Constants
@@ -82,16 +81,20 @@ PRESET_VALUES = {
 }
 
 
+# --- PAGE TITLE ---
+st.set_page_config(page_title="Y42 ROI Calculator", page_icon = "")
+
+
 # --- SIDEBAR ---
 
-st.sidebar.image("./OnDark.png", width=160)
+st.sidebar.image("y42_logo_dark.png", width=160)
 st.sidebar.title("Benchmarking Virtual Data Builds \n Calculating ROI for Data Teams")
 st.sidebar.write("")
 st.sidebar.write("")
 
 
 # Use columns to create a row of filters at the top
-st.sidebar.markdown(''' :violet[Simulation Parameters]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
+st.sidebar.markdown(''' :violet[**Simulation Parameters**]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
 
 
 data_models = st.sidebar.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
@@ -117,9 +120,9 @@ if st.sidebar.button("Add New Entry"):
 
 # --- MAIN PAGE ---
 
-image = Image.open('OnDark.png')
-st.image(image)
-st.title("Benchmarking Virtual Data Builds")
+image = Image.open('y42_logo_dark.png')
+st.image(image, width=160)
+st.markdown("### Introduction: Refresher on Virtual Data Builds")
 
 # EXPLANATION SECTION - WHAT ARE VIRTUAL DATA BUILDS?
 
@@ -132,36 +135,18 @@ with st.expander("What are Virtual Data Builds?", expanded=False):
     - **Work on production data in your feature branch** without duplicating data or impacting the production environment/branch with no additional cost.
     - **Less mental overhead**: VDB converts your code operations into data warehouse assets, saving you the pain of managing environments and promoting code through. 
     - **Significant savings on warehouse costs, ranging from 37% to 68%** depending on your setup, as we will see in this benchmark.
-    
-    You can find out more about Virtual Data Builds in [this article](https://www.y42.com/blog/virtual-data-builds-one-data-warehouse-environment-for-every-git-commit/)
     """)
 
+with st.expander("How do they work under the hood?", expanded=False):
+    st.markdown("""
+    You can learn about the inner workings of Virtual Data Builds in [this video.](https://www.loom.com/share/763ae4d3a6694a1889b2c66b152e7512)
+    """)
 
-# col1, col2, col3, col4 = st.columns(4)
+with st.expander("Where can I read more about them?", expanded=False):
+    st.markdown("""
+    You can find a detailed overview about Virtual Data Builds in [this article.](https://www.y42.com/blog/virtual-data-builds-one-data-warehouse-environment-for-every-git-commit/)
+    """)
 
-# # Now add your filters inside these columns
-# with col1:
-#     data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
-
-# with col2:
-#     data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
-
-# with col3:
-#     code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
-
-# with col4:
-#     env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
-
-# col1, col2, col3, col4 = st.columns(4)
-
-# with col1:
-#     rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
-
-# with col2:
-#     compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
-
-# with col3:
-#     tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
 
 # Initialize session state
 if 'roi' not in st.session_state:
@@ -187,16 +172,18 @@ if 'df' not in st.session_state:
 
 st.markdown('---')
 
-st.markdown("### ROI Summary")
+st.markdown("### Calculation Result: ROI Summary")
 st.write('Please note that these figures refer to the last entry added. Removing an entry will not impact these figures.')
+
 st.write('Tool investment: ', st.session_state['tooling_invest'], st.session_state['total_savings'], st.session_state['roi'])
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
+    st.markdown(""" Tooling investment:""")
     st.markdown(f"""
         <div style='font-size: 36px;'>
-            Tooling investment: {st.session_state['tooling_invest']}$
+            {st.session_state['tooling_invest']}$ 
         </div>
     """, unsafe_allow_html=True)
 
@@ -210,7 +197,7 @@ with col1:
 st.markdown('---')
 
 # Detailed breakdown
-st.markdown("### Detailed breakdown")
+st.markdown("### Calculation result: Detailed breakdown")
 st.write("In this section, you can view the table containing details about different configurations. Each entry in the table represents a configuration with details like data model, data volume, code changes frequency, number of environments, and rollbacks. You can add new entries or remove existing ones.")
 
 with st.expander("Storage and Compute cost formulas", expanded=False):
@@ -324,5 +311,3 @@ url = 'https://www.y42.com/form/call/form-lp-hs-form-on-homepage-get-free-trial/
 
 if st.button("Try Y42 for free and save DWH cost today"):
     webbrowser.open_new_tab(url)
-
-
