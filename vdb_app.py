@@ -80,10 +80,19 @@ PRESET_VALUES = {
     "Large 2": [1500, 800000, 1000, 5, 30, 12, 1000]
 }
 
+# --- PAGE SETUP ---
 
-# --- PAGE TITLE ---
-st.set_page_config(page_title="Y42 ROI Calculator", page_icon = "")
+# Add title and app icon
+st.set_page_config(page_title="Y42 ROI Calculator", page_icon = "y42_logo_round.png")
 
+# Hide standard Streamlit footer and hamburger menu icon
+hide_default_format = """
+       <style>
+       #MainMenu {visibility: hidden; }
+       footer {visibility: hidden;}
+       </style>
+       """
+st.markdown(hide_default_format, unsafe_allow_html=True)
 
 # --- SIDEBAR ---
 
