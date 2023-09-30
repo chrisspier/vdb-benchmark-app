@@ -167,7 +167,7 @@ if 'df' not in st.session_state:
     large_values = calculate_costs(*PRESET_VALUES["Large"])
     large_values_2 = calculate_costs(*PRESET_VALUES["Large 2"])
 
-    st.session_state['df'] = pd.DataFrame([small_values, small_values_2, medium_values, medium_values_2, large_values, large_values_2])
+    st.session_state['df'] = pd.DataFrame([small_values, small_values_2, medium_values, medium_values_2, large_values, large_values_2], index=pd.Index(["X-Small","Small","Medium","Medium 2", "Large", "Large 2"]))
 
 
 st.markdown('---')
@@ -284,12 +284,16 @@ fig.update_traces(texttemplate='%{y:$}', textposition='inside')
 # Display the bar chart
 st.plotly_chart(fig, use_container_width=True)
 
+st.markdown('---')
+
 st.markdown("""
 ### **Conclusions**
 - The **compute cost** decreases significantly 📉, while the **storage cost** increases only marginally 📈.
 - Since compute costs are typically an order of magnitude higher than storage costs, utilizing VDB can significantly reduce the total expenditure by lowering compute costs.
 - The more code changes you make and the more environments you have to promote your changes through, the bigger the cost impact will be when enabling VDB.
 """)
+
+st.markdown('---')
 
 st.markdown("")
 st.markdown("### Got Curious?")
