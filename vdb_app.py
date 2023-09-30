@@ -25,10 +25,10 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
     
     # Calculate savings percentage
     saving_percentage = round(((total_cost_vdb_disabled - total_cost_vdb_enabled) / total_cost_vdb_disabled) * 100,2)
-    total_savings = total_cost_vdb_disabled-total_cost_vdb_enabled
+    total_savings = round(total_cost_vdb_disabled-total_cost_vdb_enabled, 1)
 
     #Calculate ROI
-    roi = 100 * (total_savings-tooling_invest)/tooling_invest
+    roi = round( 100 * (total_savings-tooling_invest)/tooling_invest, 1)
 
     return {
         'Data Models': data_models,
@@ -75,9 +75,9 @@ PRESET_VALUES = {
     "X-Small": [50, 100, 15, 2, 1, 7, 10],
     "Small": [200, 100, 40, 2, 1, 7, 10],
     "Medium": [1000, 10000, 300, 3, 3, 7, 100],
-    "Medium 2": [5000, 30000, 400, 4, 3, 8, 100],
+    "Medium 2": [5000, 30000, 400, 4, 3, 8, 500],
     "Large": [3000, 100000, 600, 5, 5, 7, 1000],
-    "Large 2": [1500, 800000, 1000, 5, 30, 12, 1000]
+    "Large 2": [1500, 800000, 1000, 5, 30, 12, 10000]
 }
 
 # --- PAGE SETUP ---
@@ -116,15 +116,6 @@ with st.sidebar:
         if st.button("Add New Entry"):
             add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
 
-# st.sidebar.selectbox("Select Team Size", ["Small", "Medium", "Large", "Custom"], key='team_size')
-# st.sidebar.markdown("### Input Parameters")
-# data_models = st.sidebar.number_input("Data Models", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[0], on_change=set_custom)
-# data_volume = st.sidebar.number_input("Data Volume (GB)", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[1], on_change=set_custom)
-# code_changes = st.sidebar.number_input("Monthly Code Changes", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[2], on_change=set_custom)
-# env_count = st.sidebar.number_input("Number of Environments", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[3], on_change=set_custom)
-# rollbacks = st.sidebar.number_input("Rollbacks", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[4], on_change=set_custom)
-# compute_to_storage_ratio = st.sidebar.number_input("Current Compute to Storage Ratio", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[5], on_change=set_custom)
-#st.set_page_config(layout="wide")
 
 # --- MAIN PAGE ---
 
@@ -161,13 +152,13 @@ with st.expander("Where can I read more about them?", expanded=False):
 
 # Initialize session state
 if 'roi' not in st.session_state:
-    st.session_state['roi'] = '910'
+    st.session_state['roi'] = '719'
 
 if 'total_savings' not in st.session_state:
-    st.session_state['total_savings'] = '1010'
+    st.session_state['total_savings'] = '4096'
 
 if 'tooling_invest' not in st.session_state:
-    st.session_state['tooling_invest'] = '100'
+    st.session_state['tooling_invest'] = '500'
 
 if 'df' not in st.session_state:
     # Initialize your DataFrame here with your predefined data
@@ -245,9 +236,9 @@ st.dataframe(
         "Total": st.column_config.NumberColumn(format="$%d"),
         "Total (VDB)": st.column_config.NumberColumn(format="$%d"),
         "Savings %": st.column_config.NumberColumn(format="%d%%"),
-        # "Savings $": st.column_config.NumberColumn(format="$%d"),
-        # "Tool Investment (per month)": st.column_config.NumberColumn(format="$%d"),
-        # "ROI": st.column_config.NumberColumn(format="%d%%"),
+        "Savings $": st.column_config.NumberColumn(format="$%d"),
+        "Tool Investment (per month)": st.column_config.NumberColumn(format="$%d"),
+        "ROI": st.column_config.NumberColumn(format="%d%%"),
     },
     hide_index=False,
 )
