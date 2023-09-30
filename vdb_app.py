@@ -50,6 +50,24 @@ def calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks
         'ROI': roi,
     }
 
+def add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio):
+    new_entry = calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio, tooling_invest)
+
+    # Ensuring the saving_percentage is not negative
+    if new_entry['Savings %'] < 0:
+        new_entry['Savings %'] = 0
+    
+    st.session_state['roi'] = new_entry['ROI']
+    st.session_state['total_savings'] = new_entry['Savings $']
+    st.session_state['tooling_invest'] = new_entry['Tool Investment (per month)']
+
+    st.session_state['df'] = pd.concat([st.session_state['df'], pd.DataFrame([new_entry])], ignore_index=True)
+
+def remove_entry(index):
+    if st.session_state['df'].empty:
+        st.warning('No more entries to remove.')
+    else:
+        st.session_state['df'] = st.session_state['df'].drop(index)
 
 
 # Define the default values and presets
@@ -63,11 +81,30 @@ PRESET_VALUES = {
     "Large 2": [1500, 800000, 1000, 5, 30, 12, 1000]
 }
 
-# Function to set team size to Custom
-def set_custom():
-    st.session_state['team_size'] = "Custom"
 
-# # Sidebar with inputs
+# --- SIDEBAR ---
+
+st.sidebar.image("./OnDark.png", width=160)
+st.sidebar.title("Benchmarking Virtual Data Builds \n Calculating ROI for Data Teams")
+st.sidebar.write("")
+st.sidebar.write("")
+
+
+# Use columns to create a row of filters at the top
+st.sidebar.markdown(''' :violet[Simulation Parameters]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
+
+
+data_models = st.sidebar.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
+data_volume = st.sidebar.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
+code_changes = st.sidebar.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
+env_count = st.sidebar.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
+rollbacks = st.sidebar.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
+compute_to_storage_ratio = st.sidebar.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
+tooling_invest = st.sidebar.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
+
+if st.sidebar.button("Add New Entry"):
+    add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
+
 # st.sidebar.selectbox("Select Team Size", ["Small", "Medium", "Large", "Custom"], key='team_size')
 # st.sidebar.markdown("### Input Parameters")
 # data_models = st.sidebar.number_input("Data Models", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[0], on_change=set_custom)
@@ -76,13 +113,15 @@ def set_custom():
 # env_count = st.sidebar.number_input("Number of Environments", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[3], on_change=set_custom)
 # rollbacks = st.sidebar.number_input("Rollbacks", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[4], on_change=set_custom)
 # compute_to_storage_ratio = st.sidebar.number_input("Current Compute to Storage Ratio", value=PRESET_VALUES.get(st.session_state['team_size'], DEFAULT_VALUES)[5], on_change=set_custom)
+#st.set_page_config(layout="wide")
 
-st.set_page_config(layout="wide")
-
+# --- MAIN PAGE ---
 
 image = Image.open('OnDark.png')
 st.image(image)
 st.title("Benchmarking Virtual Data Builds")
+
+# EXPLANATION SECTION - WHAT ARE VIRTUAL DATA BUILDS?
 
 with st.expander("What are Virtual Data Builds?", expanded=False):
     st.markdown("""
@@ -98,36 +137,31 @@ with st.expander("What are Virtual Data Builds?", expanded=False):
     """)
 
 
-# Use columns to create a row of filters at the top
-st.markdown("### Simulation Parameters")
-st.write("Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
+# col1, col2, col3, col4 = st.columns(4)
 
+# # Now add your filters inside these columns
+# with col1:
+#     data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
 
-col1, col2, col3, col4 = st.columns(4)
+# with col2:
+#     data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
 
-# Now add your filters inside these columns
-with col1:
-    data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
+# with col3:
+#     code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
 
-with col2:
-    data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
+# with col4:
+#     env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
 
-with col3:
-    code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
+# col1, col2, col3, col4 = st.columns(4)
 
-with col4:
-    env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
+# with col1:
+#     rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
 
-col1, col2, col3, col4 = st.columns(4)
+# with col2:
+#     compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
 
-with col1:
-    rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
-
-with col2:
-    compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
-
-with col3:
-    tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
+# with col3:
+#     tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
 
 # Initialize session state
 if 'roi' not in st.session_state:
@@ -149,32 +183,6 @@ if 'df' not in st.session_state:
     large_values_2 = calculate_costs(*PRESET_VALUES["Large 2"])
 
     st.session_state['df'] = pd.DataFrame([small_values, small_values_2, medium_values, medium_values_2, large_values, large_values_2])
-
-def add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio):
-    new_entry = calculate_costs(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio, tooling_invest)
-
-    # Ensuring the saving_percentage is not negative
-    if new_entry['Savings %'] < 0:
-        new_entry['Savings %'] = 0
-    
-    st.session_state['roi'] = new_entry['ROI']
-    st.session_state['total_savings'] = new_entry['Savings $']
-    st.session_state['tooling_invest'] = new_entry['Tool Investment (per month)']
-
-    st.session_state['df'] = pd.concat([st.session_state['df'], pd.DataFrame([new_entry])], ignore_index=True)
-
-
-
-
-def remove_entry(index):
-    if st.session_state['df'].empty:
-        st.warning('No more entries to remove.')
-    else:
-        st.session_state['df'] = st.session_state['df'].drop(index)
-
-
-if st.button("Add New Entry"):
-    add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
 
 
 st.markdown('---')
