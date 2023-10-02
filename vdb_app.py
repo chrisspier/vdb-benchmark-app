@@ -104,17 +104,18 @@ st.sidebar.write("")
 # Use columns to create a row of filters at the top
 #st.sidebar.markdown(''' :violet[**Simulation Parameters**]''', help="Here, you can adjust the parameters to define your data model, data volume, code changes frequency, number of environments, and the number of rollbacks. You can also set the compute to storage ratio.")
 with st.sidebar: 
-    with st.expander("💻 ENTER YOUR INPUT METRICS", expanded=False):
-        data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
-        data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
-        code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
-        env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
-        rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
-        compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
-        tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
+    st.write("💻 ENTER YOUR INPUT VALUES")
+    data_models = st.number_input('Data Models', value=1000, step=100)  # Adjust the value and label accordingly
+    data_volume = st.number_input('Data Volume (GB)', value=10000, step=100)  # Adjust the value and label accordingly
+    code_changes = st.number_input('Monthly Code Changes', value=300, step=100)  # Adjust the value and label accordingly
+    env_count = st.number_input('Environments', value=3, step=1)  # Adjust the value and label accordingly
+    rollbacks = st.number_input('Rollbacks', value=3, step=1)  # Adjust the value and label accordingly
+    compute_to_storage_ratio = st.number_input('Compute to Storage ratio', value=7, step=1)  # Adjust the value and label accordingly
+    tooling_invest = st.number_input('Tool Investment (per month)', value = 100, step=100) # Adjust the value and label accordingly
 
-        if st.button("Add New Entry"):
-            add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
+    if st.button("Add New Entry"):
+        add_entry(data_models, data_volume, code_changes, env_count, rollbacks, compute_to_storage_ratio)
+        st.session_state['button_clicked'] = True
 
 
 # --- MAIN PAGE ---
@@ -160,6 +161,9 @@ if 'total_savings' not in st.session_state:
 if 'tooling_invest' not in st.session_state:
     st.session_state['tooling_invest'] = '500'
 
+if 'button_clicked' not in st.session_state:
+    st.session_state['button_clicked'] = False
+
 if 'df' not in st.session_state:
     # Initialize your DataFrame here with your predefined data
     small_values = calculate_costs(*PRESET_VALUES["X-Small"])
@@ -169,41 +173,35 @@ if 'df' not in st.session_state:
     large_values = calculate_costs(*PRESET_VALUES["Large"])
     large_values_2 = calculate_costs(*PRESET_VALUES["Large 2"])
 
-    st.session_state['df'] = pd.DataFrame([small_values, small_values_2, medium_values, medium_values_2, large_values, large_values_2], index=pd.Index(["X-Small","Small","Medium","Medium 2", "Large", "Large 2"]))
+    st.session_state['df'] = pd.DataFrame([small_values, small_values_2, medium_values, medium_values_2, large_values, large_values_2])
 
 
 st.markdown('---')
 
 st.markdown("### Calculation result: ROI summary")
 st.write('')
-st.write('Please note that these figures refer to the last entry added. Removing an entry will not impact these figures. The last entry referred to here is in Row', len(st.session_state['df'].index), 'of the table below.')
+if st.session_state['button_clicked']:
+    st.write(f'Please note that these figures refer to the last entry added. Removing an entry will not impact these figures. The last entry referred to here is in Row {len(st.session_state["df"].index)} of the table below.')
+else: 
+    st.write('Please note that these figures refer to the last entry added. Removing an entry will not impact these figures. The last entry referred to here is in Row 3 of the table below.')
 st.write('')
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown(""" Tooling investment:""")
-    st.markdown(f"""
-        <div style='font-size: 36px;'>
-            {st.session_state['tooling_invest']}$ 
-        </div>
-    """, unsafe_allow_html=True)
+    st.metric(label="Tooling investment", value=f"{st.session_state['tooling_invest']} $")
 
 with col2:
-    st.markdown(""" VDB-related Savings:""")
-    st.markdown(f"""
-        <div style='font-size: 36px;'>
-            {st.session_state['total_savings']}$
-        </div>
-    """, unsafe_allow_html=True)
+    st.metric(label="VDB-related Savings:", value=f"{st.session_state['total_savings']} $")
 
 with col3:
-    st.markdown(""" Return on Investment:""")
-    st.markdown(f"""
-        <div style='font-size: 36px;'>
-            {st.session_state['roi']}%
-        </div>
-    """, unsafe_allow_html=True)
+    st.metric(label='Return on Investment', value=f"{st.session_state['roi']} %", delta = f"{int(st.session_state['tooling_invest'])-int(st.session_state['total_savings'])} $", delta_color="inverse" )
+    # st.markdown(""" Return on Investment:""")
+    # st.markdown(f"""
+    #     <div style='font-size: 36px;'>
+    #         {st.session_state['roi']}%
+    #     </div>
+    # """, unsafe_allow_html=True)
 
 
 st.markdown('---')
