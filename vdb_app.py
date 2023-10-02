@@ -83,7 +83,7 @@ PRESET_VALUES = {
 # --- PAGE SETUP ---
 
 # Add title and app icon
-st.set_page_config(page_title="Y42 ROI Calculator", page_icon = "y42_logo_round.png")
+st.set_page_config(page_title="Y42 ROI Calculator", page_icon = "y42_logo_round.png", layout="wide")
 
 # Hide standard Streamlit footer and hamburger menu icon
 hide_default_format = """
