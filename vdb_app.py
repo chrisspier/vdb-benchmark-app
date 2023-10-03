@@ -310,42 +310,73 @@ st.markdown("")
 st.markdown("### Got curious about the product or have some questions?")
 
 
+# col1, col2, col3, col4 = st.columns(4)
+
+# with col1:
+#     m = st.markdown("""
+#     <style>
+#     div.stButton > button:first-child {
+#         background-color: #421f8e;
+#         color: #ffffff;
+#     }
+#     div.stButton > button:hover {
+#         background-color: #7d33ff;
+#         color: #ffffff;
+#         border: #7d33ff;
+#         }
+#     </style>""", unsafe_allow_html=True)
+
+#     url = 'https://www.y42.com/form/call/form-lp-hs-form-on-homepage-get-free-trial/'
+
+#     if st.button("Try Y42 for free"):
+#         webbrowser.open_new_tab(url)
+
+# with col2:
+#     m = st.markdown("""
+#     <style>
+#     div.stButton > button:first-child {
+#         background-color: #421f8e;
+#         color: #ffffff;
+#     }
+#     div.stButton > button:hover {
+#         background-color: #7d33ff;
+#         color: #ffffff;
+#         border: #7d33ff;
+#         }
+#     </style>""", unsafe_allow_html=True)
+
+#     url = 'https://www.y42.com/form/call/intro-call/'
+
+#     if st.button("Talk to an expert"):
+#         webbrowser.open_new_tab(url)
+
+
+def redirect_button(url: str, text: str= None, color="#7d33ff"):
+    st.markdown(
+    f"""
+    <a href="{url}" target="_self">
+        <div style="
+            display: inline-block;
+            padding: 0.5em 1em;
+            color: #FFFFFF;
+            background-color: {color};
+            border-radius: 8px;
+            border: #7d33ff;
+            text-decoration: none;">
+            {text}
+        </div>
+    </a>
+    """,
+    unsafe_allow_html=True
+    )
+
+
 col1, col2, col3, col4 = st.columns(4)
 
-with col1:
-    m = st.markdown("""
-    <style>
-    div.stButton > button:first-child {
-        background-color: #421f8e;
-        color: #ffffff;
-    }
-    div.stButton > button:hover {
-        background-color: #7d33ff;
-        color: #ffffff;
-        border: #7d33ff;
-        }
-    </style>""", unsafe_allow_html=True)
-
+with col1: 
     url = 'https://www.y42.com/form/call/form-lp-hs-form-on-homepage-get-free-trial/'
+    redirect_button(url,"Try Y42 for free")
 
-    if st.button("Try Y42 for free"):
-        webbrowser.open_new_tab(url)
-
-with col2:
-    m = st.markdown("""
-    <style>
-    div.stButton > button:first-child {
-        background-color: #421f8e;
-        color: #ffffff;
-    }
-    div.stButton > button:hover {
-        background-color: #7d33ff;
-        color: #ffffff;
-        border: #7d33ff;
-        }
-    </style>""", unsafe_allow_html=True)
-
+with col2: 
     url = 'https://www.y42.com/form/call/intro-call/'
-
-    if st.button("Talk to an expert"):
-        webbrowser.open_new_tab(url)
+    redirect_button(url,"Talk to an expert")
