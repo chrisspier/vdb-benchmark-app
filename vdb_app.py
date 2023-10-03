@@ -354,7 +354,7 @@ st.markdown("### Got curious about the product or have some questions?")
 def redirect_button(url: str, text: str= None, color="#7d33ff"):
     st.markdown(
     f"""
-    <a href="{url}" target="_self">
+    <a href="{url}" target="_blank">
         <div style="
             display: inline-block;
             padding: 0.5em 1em;
