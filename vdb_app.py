@@ -209,6 +209,7 @@ st.markdown('---')
 # Detailed breakdown
 st.markdown("### Calculation result: Detailed breakdown")
 st.write("In this section, you can view the table containing details about different configurations. Each entry in the table represents a configuration with details like data model, data volume, code changes frequency, number of environments, and rollbacks. You can add new entries or remove existing ones.")
+st.write("Please note that you can scroll to the right on the table below.")
 
 with st.expander("Storage and Compute cost formulas", expanded=False):
     st.markdown("""
